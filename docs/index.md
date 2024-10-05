@@ -1,5 +1,7 @@
-# Uptime, on a good day
-
+---
+layout: page
+title: Uptime on a good day
+---
 It's Sunday, and all is quiet. No one's shipping changes to your site. Traffic is low. So what will your uptime be?
 
 ## SLO configuration
