@@ -1,5 +1,8 @@
 // create a block to avoid conflicts in the global scope
 {
+  const evalWindow = 5;
+  const reqPerMin = 100;
+
   const div = document.currentScript.parentElement;
 
   const alertThreshold = Number(div.getAttribute("alertThreshold"));
@@ -37,8 +40,14 @@
       const m = event.offsetX;
 
       document.getElementById("inspect-minute").innerHTML = `Minute ${m}`;
-      document.getElementById("inspect-good").innerHTML = minutes[m].trailingGood;
-      document.getElementById("inspect-total").innerHTML = minutes[m].trailingTotal;
+
+      for (let i = 0; i < evalWindow; i++) {
+        document.getElementById(`inspect-good-${i}`).innerHTML = m >= i ? minutes[m-i].good : '-';
+        document.getElementById(`inspect-total-${i}`).innerHTML = m >= i ? minutes[m-i].total : '-';
+      }
+
+      document.getElementById("inspect-good-t").innerHTML = minutes[m].trailingGood;
+      document.getElementById("inspect-total-t").innerHTML = minutes[m].trailingTotal;
 
       const val = minutes[m].trailingGood / minutes[m].trailingTotal;
       document.getElementById("inspect-outer-value").style.background = val >= alertThreshold ? "green" : "red";
@@ -53,8 +62,6 @@
   function animate() {
     console.log("animate called");
     animationDone = false;
-    const evalWindow = 1;
-    const reqPerMin = 500;
 
     monitorConfigDiv.innerHTML = `Monitor evaluation window: ${evalWindow} minute. Monitor alert threshold: <${100 * alertThreshold} %.`
     observedDiv.innerHTML = `Requests/minute: ${reqPerMin}. Average success rate: ${100 * successRate} %.`
@@ -65,13 +72,12 @@
 
     const ctx = canvas.getContext("2d");
 
-
     for (let m = 0; m < minutes.length; m++) {
       minutes[m] = {
         good: reqPerMin,
         total: reqPerMin,
-        trailingGood: evalWindow * reqPerMin,
-        trailingTotal: evalWindow * reqPerMin,
+        trailingGood: reqPerMin * Math.min(m + 1, evalWindow),
+        trailingTotal: reqPerMin * Math.min(m + 1, evalWindow),
       }
     }
 
@@ -81,9 +87,14 @@
     const errorCount = Math.floor(totalRequest * (1 - successRate));
     for (let e = 0; e < errorCount; e++) {
       const m = Math.floor(minutes.length * Math.random())
-      minutes[m].good--;
-      for (let wi = 0; wi < evalWindow && m + wi < minutes.length; wi++) {
-        minutes[m + wi].trailingGood--;
+
+      if (minutes[m].good > 0) {
+        minutes[m].good--;
+        for (let wi = 0; wi < evalWindow && m + wi < minutes.length; wi++) {
+          minutes[m + wi].trailingGood--;
+        }
+      } else {
+        console.log('what are the odds? How unreliable is your service?');
       }
     }
 
