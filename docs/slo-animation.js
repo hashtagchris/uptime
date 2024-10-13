@@ -15,7 +15,7 @@
   const rerunButton = div.getElementsByClassName("rerun-button")[0];
 
   // singleton divs
-  const canvasDetail = document.getElementById("inspect");
+  const inspectDiv = document.getElementById("inspect");
 
   rerunButton.addEventListener("click", () => {
     console.log("rerun clicked");
@@ -26,7 +26,7 @@
   canvas.addEventListener("mousemove", inspect);
 
   canvas.addEventListener("mouseout", () => {
-    canvasDetail.style.visibility = "hidden";
+    inspectDiv.style.visibility = "hidden";
   });
 
   const minutes = Array(1000);
@@ -53,9 +53,9 @@
       document.getElementById("inspect-outer-value").style.background = val >= alertThreshold ? "green" : "red";
       document.getElementById("inspect-inner-value").innerHTML = `${(100 * val).toFixed(2)} %`;
 
-      canvasDetail.style.left = `${event.x}px`;
-      canvasDetail.style.top = `${event.y + 10}px`;
-      canvasDetail.style.visibility = "visible";
+      inspectDiv.style.left = `${event.x}px`;
+      inspectDiv.style.top = `${event.y + 10}px`;
+      inspectDiv.style.visibility = "visible";
     }
   }
 
@@ -63,10 +63,10 @@
     console.log("animate called");
     animationDone = false;
 
-    monitorConfigDiv.innerHTML = `Monitor evaluation window: ${evalWindow} minute. Monitor alert threshold: <${100 * alertThreshold} %.`
+    monitorConfigDiv.innerHTML = `Monitor evaluation window: ${evalWindow} minutes. Monitor alert threshold: <${100 * alertThreshold} %.`
     observedDiv.innerHTML = `Requests/minute: ${reqPerMin}. Average success rate: ${100 * successRate} %.`
 
-    canvasDetail.style.visibility = "hidden";
+    inspectDiv.style.visibility = "hidden";
     rerunButton.style.visibility = "hidden";
     progressResultDiv.innerHTML = 'Randomly distributing bad requests...';
 
@@ -121,8 +121,6 @@
 
         progressResultDiv.innerHTML = `<b>Uptime</b>: ${100 * goodMinutes / minutes.length} %.`;
         rerunButton.style.visibility = "visible";
-
-        canvas.addEventListener("mousemove", inspect);
       }
     }, 1)
   }
