@@ -30,3 +30,6 @@ Even if your service's average reliability is 99%, if that's also your monitor's
 This pass/fail behavior can also work in your favor. If your service's average reliability is 99.9%, and your monitor's alert threshold is just 99%, your uptime on good days will likely be 100% (infinite nines):
 
 {% include slo-animation.html successRate='0.999' alertThreshold='0.99' %}
+
+## Sidebar: Using a random distribution
+Is using a random distribution to model failed requests realistic? On a quiet day with no deploys, and the services you depend on not shipping changes either, I think it could be. If your service is publicly available and you haven't hardened it with fuzz testing, you might receive vulnerability scanning requests from bots that result in service errors at random times. And if you have a fairly reliable network, then the occasional `ECONNRESET` or dropped packet may be randomly distributed. If your service has internal retries on network errors, perhaps request latency will appear more random than failed request processing.
