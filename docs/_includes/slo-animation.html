@@ -1,10 +1,33 @@
-<div class="slo-animation" successRate="{{ include.successRate }}" alertThreshold="{{ include.alertThreshold }}" style="padding: 10px; margin-bottom: 10px; background-color: cornsilk; width: 1000px;">
-  <canvas class="canvas" height=50 width=1000></canvas>
-  <div class="monitor-config" style="font-size: small;"></div>
-  <div class="observed" style="font-size: small;"></div>
-  <div>
-    <button class="rerun-button">🔄</button>
-    <span class="progress-result"></span>
+<div>
+  <div class="inspect-overall-canvas"
+    style="position: fixed; visibility: hidden; transform: translate(-50%, 0%); background: white; border:1px solid black; justify-content: center; z-index: 9;">
+    <div class="inspect-overall-minute" style="text-align: center;">Minute N</div>
+    <table class="inspect-overall-table" style="margin-bottom: 0px;">
+      <tr>
+        <th>Overall result</th>
+        <td class="inspect-overall-result"></td>
+      </tr>
+    </table>
   </div>
+
+  <div class="slo-animation" successRate="{{ include.successRate }}" alertThreshold="{{ include.alertThreshold }}"
+    monitorCount="{{ include.monitorCount }}"
+    style="transform: translate(-200px, 0%); margin-bottom: 10px; width: 1200px;">
+    <table class="slo-table">
+      <tr>
+        <th colspan="2">Monitor</th>
+        <th>Status</th>
+      </tr>
+      <tr>
+        <td>Overall Uptime <button class="rerun-button">🔄</button>
+        </td>
+        <td>
+          <canvas class="overall-canvas" height=50 width=1000></canvas>
+        </td>
+        <td class="overall-uptime">N %</td>
+      </tr>
+    </table>
+  </div>
+
   <script src="./slo-animation.js"></script>
 </div>

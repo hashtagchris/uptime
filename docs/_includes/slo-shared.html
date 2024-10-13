@@ -1,27 +1,32 @@
-<div id="inspect" style="position: fixed; transform: translate(-50%, 0%); background: white; border:1px solid black; justify-content: center">
-    <div id="inspect-minute" style="text-align: center;">Minute N</div>
-    <table style="margin-bottom: 0px;">
-        <tr>
-            <th>Good requests</th>
-            <td id="inspect-good-4">100</td>
-            <td id="inspect-good-3">100</td>
-            <td id="inspect-good-2">100</td>
-            <td id="inspect-good-1">100</td>
-            <td id="inspect-good-0">100</td>
-            <td id="inspect-good-t" style="font-weight: bold;">500</td>
-        </tr>
-        <tr>
-            <th>Total requests</th>
-            <td id="inspect-total-4">100</td>
-            <td id="inspect-total-3">100</td>
-            <td id="inspect-total-2">100</td>
-            <td id="inspect-total-1">100</td>
-            <td id="inspect-total-0">100</td>
-            <td id="inspect-total-t" style="font-weight: bold;">500</td>
-        </tr>
-        <tr>
-            <th colspan="6">Monitor value</th>
-            <td id="inspect-outer-value" style="font-weight: bold;"><div id="inspect-inner-value" style="background: white; margin: 5px">N % </div></td>
-        </tr>
-    </table>
+<div id="inspect-monitor-details" style="position: fixed; visibility: hidden; transform: translate(-50%, 0%); background: white; border:1px solid black; justify-content: center; z-index: 9;">
+  <div id="monitor-config">Monitor evaluation window: N minutes. Monitor alert threshold: N %.</div>
+  <div id="monitored-service-details">Requests/minute: N. Average success rate: N %.</div>
+</div>
+
+<div id="inspect-monitor-canvas" style="position: fixed; visibility: hidden; transform: translate(-50%, 0%); background: white; border:1px solid black; justify-content: center; z-index: 9;">
+  <div id="inspect-minute" style="text-align: center;">Minute N</div>
+  <table style="margin-bottom: 0px;">
+    <tr>
+          <th>Good requests</th>
+          <td id="inspect-good-4">100</td>
+          <td id="inspect-good-3">100</td>
+          <td id="inspect-good-2">100</td>
+          <td id="inspect-good-1">100</td>
+          <td id="inspect-good-0">100</td>
+          <td id="inspect-good-t" style="font-weight: bold;">500</td>
+      </tr>
+      <tr>
+          <th>Total requests</th>
+          <td id="inspect-total-4">100</td>
+          <td id="inspect-total-3">100</td>
+          <td id="inspect-total-2">100</td>
+          <td id="inspect-total-1">100</td>
+          <td id="inspect-total-0">100</td>
+          <td id="inspect-total-t" style="font-weight: bold;">500</td>
+      </tr>
+      <tr>
+          <th colspan="6">Monitor value</th>
+          <td id="inspect-outer-value" style="font-weight: bold;"><div id="inspect-inner-value" style="background: white; margin: 5px">N % </div></td>
+      </tr>
+  </table>
 </div>
