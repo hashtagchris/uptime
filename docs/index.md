@@ -62,8 +62,13 @@ Look what happens when we fall below 100 requests per evaluation window. Our ser
 ### 4 requests per evaluation window
 If you're unwilling to extend a monitor's evaluation window so it takes multiple failed requests to turn the monitor red, then consider doing the opposite. Surprisingly, uptime will be improved by shortening the monitor evaluation window to one minute. That way a failed request results in just one red minute.
 
-While this improves on the example above, you're unlikely to have 100% uptime if a single failed request results in a red minute. If a long evaluation window isn't an option, you'll need to improve your service's reliability to improve your uptime during low traffic periods. Or possibly look into using [composite monitors](https://docs.datadoghq.com/monitors/types/composite/) if the request rate differs greatly between peak and non-peak hours.
+While this improves on the example above, you're unlikely to have 100% uptime if a single failed request results in a red minute. If a long evaluation window isn't an option, you'll need to improve your service's reliability to improve your uptime during low traffic periods.
 
 {% include slo-animation.html successRate='0.999' alertThreshold='0.99' monitorCount='1' requestsPerMinute='4' evalWindowMinutes='1' %}
+
+If the request rate differs greatly between peak and low traffic periods, you could use a [composite monitor](https://docs.datadoghq.com/monitors/types/composite/) and a second metric monitor to prevent a single failed request from impacting uptime during low traffic periods. But there are downsides to this approach:
+
+* Composite monitors prevent the usage of [burn rate alerts](https://docs.datadoghq.com/service_management/service_level_objectives/burn_rate/) for your uptime SLO
+* 2 additional monitors to manage, document and reason about, per low volume service
 
 [View this page on GitHub](https://github.com/hashtagchris/uptime/blob/main/docs/index.md)
