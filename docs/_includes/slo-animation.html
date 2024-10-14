@@ -10,8 +10,30 @@
     </table>
   </div>
 
+  <div class="inspect-monitor-canvas"
+    style="position: fixed; visibility: hidden; transform: translate(-50%, 0%); background: white; border:1px solid black; justify-content: center; z-index: 9;">
+    <div class="inspect-minute" style="text-align: center;">Minute N</div>
+    <table style="margin-bottom: 0px;">
+      <tr class="inspect-good-row">
+        <th>Good requests</th>
+        <td class="inspect-good-t" style="font-weight: bold;">500</td>
+      </tr>
+      <tr class="inspect-total-row">
+        <th>Total requests</th>
+        <td class="inspect-total-t" style="font-weight: bold;">500</td>
+      </tr>
+      <tr class="inspect-value-row">
+        <th class="inspect-monitor-value">Monitor value</th>
+        <td class="inspect-outer-value" style="font-weight: bold;">
+          <div class="inspect-inner-value" style="background: white; margin: 5px">N % </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
   <div class="slo-animation" successRate="{{ include.successRate }}" alertThreshold="{{ include.alertThreshold }}"
     monitorCount="{{ include.monitorCount }}" requestsPerMinute="{{ include.requestsPerMinute }}"
+    evalWindowMinutes="{{ include.evalWindowMinutes }}"
     style="transform: translate(-200px, 0%); margin-bottom: 10px; width: 1200px;">
     <table class="slo-table">
       <tr>

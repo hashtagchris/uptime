@@ -1,6 +1,5 @@
 // create a block to avoid conflicts in the global scope
 {
-  const evalWindow = 5;
   const minutes = 1000;
 
   const containerDiv = document.currentScript.parentElement;
@@ -9,12 +8,23 @@
   const inspectOverallTable = containerDiv.getElementsByClassName("inspect-overall-table")[0];
   const inspectOverallResult = containerDiv.getElementsByClassName("inspect-overall-result")[0];
 
+  const inspectMonitorCanvas = containerDiv.getElementsByClassName("inspect-monitor-canvas")[0];
+  const inspectMinute = containerDiv.getElementsByClassName("inspect-minute")[0];
+  const inspectGoodRow = containerDiv.getElementsByClassName("inspect-good-row")[0];
+  const inspectGoodTotal = containerDiv.getElementsByClassName("inspect-good-t")[0];
+  const inspectTotalRow = containerDiv.getElementsByClassName("inspect-total-row")[0];
+  const inspectTotalTotal = containerDiv.getElementsByClassName("inspect-total-t")[0];
+  const inspectValueRow = containerDiv.getElementsByClassName("inspect-value-row")[0];
+  const inspectOuterValue = containerDiv.getElementsByClassName("inspect-outer-value")[0];
+  const inspectInnerValue = containerDiv.getElementsByClassName("inspect-inner-value")[0];
+
   const animationDiv = containerDiv.getElementsByClassName("slo-animation")[0];
 
   const alertThreshold = Number(animationDiv.getAttribute("alertThreshold"));
   const successRate = Number(animationDiv.getAttribute("successRate"));
   const monitorCount = Number(animationDiv.getAttribute("monitorCount"));
   const reqPerMin = Number(animationDiv.getAttribute("requestsPerMinute"));
+  const evalWindowMinutes = Number(animationDiv.getAttribute("evalWindowMinutes"));
 
   const sloTable = animationDiv.getElementsByClassName("slo-table")[0];
 
@@ -24,9 +34,9 @@
   const rerunButton = animationDiv.getElementsByClassName("rerun-button")[0];
 
   const monitors = [];
+  const minuteCells = [];
 
   // singleton divs
-  const inspectMonitorCanvas = document.getElementById("inspect-monitor-canvas");
   const inspectMonitorDetails = document.getElementById("inspect-monitor-details");
 
   rerunButton.addEventListener("click", () => {
@@ -46,7 +56,7 @@
   let animationDone;
 
   function inspectMonitorDetailsFn(event) {
-    document.getElementById("monitor-config").innerHTML = `Monitor evaluation window: ${evalWindow} minutes. Monitor alert threshold: <${100 * alertThreshold} %.`;
+    document.getElementById("monitor-config").innerHTML = `Monitor evaluation window: ${evalWindowMinutes} minute${evalWindowMinutes > 1 ? "s" : ""}. Monitor alert threshold: <${100 * alertThreshold} %.`;
     document.getElementById("monitored-service-details").innerHTML = `Requests/minute: ${reqPerMin}. Average success rate: ${100 * successRate} %.`;
 
     inspectMonitorDetails.style.left = `${event.x}px`;
@@ -83,18 +93,19 @@
     if (animationDone && event.offsetX >= 0 && event.offsetX < minutes) {
       const m = event.offsetX;
 
-      document.getElementById("inspect-minute").innerHTML = `Minute ${m+1}`;
+      inspectMinute.innerHTML = `Minute ${m+1}`;
 
-      for (let i = 0; i < evalWindow; i++) {
-        document.getElementById(`inspect-good-${i}`).innerHTML = m >= i ? monitor.minutes[m-i].good : '-';
-        document.getElementById(`inspect-total-${i}`).innerHTML = m >= i ? monitor.minutes[m-i].total : '-';
+      for (let i = 0; i < evalWindowMinutes; i++) {
+        const windowMinute = (1 + i - evalWindowMinutes) + m;
+        minuteCells[i].good.innerHTML = windowMinute >= 0 ? monitor.minutes[windowMinute].good : '-';
+        minuteCells[i].total.innerHTML = windowMinute >= 0 ? monitor.minutes[windowMinute].total : '-';
       }
 
-      document.getElementById("inspect-good-t").innerHTML = monitor.minutes[m].trailingGood;
-      document.getElementById("inspect-total-t").innerHTML = monitor.minutes[m].trailingTotal;
+      inspectGoodTotal.innerHTML = monitor.minutes[m].trailingGood;
+      inspectTotalTotal.innerHTML = monitor.minutes[m].trailingTotal;
 
-      document.getElementById("inspect-outer-value").style.background = monitor.minutes[m].isGreen ? "green" : "red";
-      document.getElementById("inspect-inner-value").innerHTML = `${(100 * monitor.minutes[m].value).toFixed(2)} %`;
+      inspectOuterValue.style.background = monitor.minutes[m].isGreen ? "green" : "red";
+      inspectInnerValue.innerHTML = `${(100 * monitor.minutes[m].value).toFixed(2)} %`;
 
       inspectMonitorCanvas.style.left = `${event.x}px`;
       inspectMonitorCanvas.style.top = `${event.y + 10}px`;
@@ -156,6 +167,20 @@
     }
   }
 
+  function addEvalWindowToMonitorTable() {
+    inspectValueRow.children[0].colSpan = evalWindowMinutes + 1;
+
+    for (let m = 0; m < evalWindowMinutes; m++) {
+      const good = document.createElement("td");
+      inspectGoodRow.insertBefore(good, inspectGoodRow.children[inspectGoodRow.children.length - 1]);
+
+      const total = document.createElement("td");
+      inspectTotalRow.insertBefore(total, inspectTotalRow.children[inspectTotalRow.children.length - 1]);
+
+      minuteCells.push({ good, total });
+    }
+  }
+
   function animate() {
     console.log("animate called");
     animationDone = false;
@@ -181,8 +206,8 @@
         monitor.minutes[m] = {
           good: reqPerMin,
           total: reqPerMin,
-          trailingGood: reqPerMin * Math.min(m + 1, evalWindow),
-          trailingTotal: reqPerMin * Math.min(m + 1, evalWindow),
+          trailingGood: reqPerMin * Math.min(m + 1, evalWindowMinutes),
+          trailingTotal: reqPerMin * Math.min(m + 1, evalWindowMinutes),
         };
       }
 
@@ -195,7 +220,7 @@
 
         if (monitor.minutes[m].good > 0) {
           monitor.minutes[m].good--;
-          for (let wi = 0; wi < evalWindow && m + wi < minutes; wi++) {
+          for (let wi = 0; wi < evalWindowMinutes && m + wi < minutes; wi++) {
             monitor.minutes[m + wi].trailingGood--;
           }
         } else {
@@ -252,5 +277,6 @@
   }
 
   addMonitorsToTables();
+  addEvalWindowToMonitorTable();
   animate();
 }
