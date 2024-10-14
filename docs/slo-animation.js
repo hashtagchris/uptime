@@ -53,7 +53,17 @@
     inspectOverallCanvas.style.visibility = "hidden";
   });
 
-  let animationDone;
+  let animationDone = false;
+
+  // Start the animation when the animation div is in view
+  const intersectionObserver = new IntersectionObserver((entries) => {
+    // If intersectionRatio is 0, the target is out of view
+    // and we do not need to do anything.
+    if (entries[0].intersectionRatio <= 0) return;
+    if (animationDone) return;
+
+    animate();
+  });
 
   function inspectMonitorDetailsFn(event) {
     document.getElementById("monitor-config").innerHTML = `Monitor evaluation window: ${evalWindowMinutes} minute${evalWindowMinutes > 1 ? "s" : ""}. Monitor alert threshold: <${100 * alertThreshold} %.`;
@@ -265,6 +275,7 @@
       if (m >= minutes) {
         clearInterval(timerId);
         animationDone = true;
+        intersectionObserver.unobserve(animationDiv);
 
         for (let monIdx = 0; monIdx < monitorCount; monIdx++) {
           const monitor = monitors[monIdx];
@@ -278,5 +289,5 @@
 
   addMonitorsToTables();
   addEvalWindowToMonitorTable();
-  animate();
+  intersectionObserver.observe(animationDiv);
 }
