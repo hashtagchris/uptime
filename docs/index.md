@@ -65,3 +65,5 @@ If you're unwilling to extend a monitor's evaluation window so it takes multiple
 While this improves on the example above, you're unlikely to have 100% uptime if a single failed request results in a red minute. If a long evaluation window isn't an option, you'll need to improve your service's reliability to improve your uptime during low traffic periods. Or possibly look into using [composite monitors](https://docs.datadoghq.com/monitors/types/composite/) if the request rate differs greatly between peak and non-peak hours.
 
 {% include slo-animation.html successRate='0.999' alertThreshold='0.99' monitorCount='1' requestsPerMinute='4' evalWindowMinutes='1' %}
+
+[View this page on GitHub](https://github.com/hashtagchris/uptime/blob/main/docs/index.md)
