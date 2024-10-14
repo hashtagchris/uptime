@@ -1,7 +1,6 @@
 // create a block to avoid conflicts in the global scope
 {
   const evalWindow = 5;
-  const reqPerMin = 100;
   const minutes = 1000;
 
   const containerDiv = document.currentScript.parentElement;
@@ -15,6 +14,7 @@
   const alertThreshold = Number(animationDiv.getAttribute("alertThreshold"));
   const successRate = Number(animationDiv.getAttribute("successRate"));
   const monitorCount = Number(animationDiv.getAttribute("monitorCount"));
+  const reqPerMin = Number(animationDiv.getAttribute("requestsPerMinute"));
 
   const sloTable = animationDiv.getElementsByClassName("slo-table")[0];
 
